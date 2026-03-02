@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { 
+    @apply bg-surface text-white font-sans; 
+  }
+  h1, h2, h3, h4, h5, h6 { 
+    @apply font-heading; 
+  }
+}
+
+@layer utilities {
+  .glass { 
+    @apply bg-white/5 backdrop-blur-md border border-white/10; 
+  }
+  .glass-strong { 
+    @apply bg-white/10 backdrop-blur-lg border border-white/20; 
+  }
+  .text-gradient { 
+    @apply bg-gradient-neon bg-clip-text text-transparent; 
+  }
+  .btn-primary { 
+    @apply bg-gradient-neon text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 transition-all duration-200 shadow-neon; 
+  }
+  .btn-secondary { 
+    @apply glass border-primary/30 text-primary-light font-semibold px-6 py-3 rounded-xl hover:bg-primary/20 transition-all duration-200; 
+  }
+  .input-field { 
+    @apply w-full bg-surface-card border border-surface-border text-white placeholder-gray-500 px-4 py-3 rounded-xl focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-all duration-200; 
+  }
+  .card { 
+    @apply glass rounded-2xl p-6 shadow-glass; 
+  }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f0f1a; }
+::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 3px; }
