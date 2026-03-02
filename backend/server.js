@@ -26,7 +26,11 @@ connectDB().then(() => {
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], credentials: true }));
+const allowedOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map(o => o.trim())
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -61,8 +65,25 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Health check endpoint (used by keep-alive ping)
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+
+    // Keep-alive: ping self every 14 min to prevent Render free-tier sleep
+    if (process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL) {
+        const PING_INTERVAL = 14 * 60 * 1000;
+        setInterval(async () => {
+            try {
+                const { default: https } = await import('https');
+                https.get(`${process.env.RENDER_EXTERNAL_URL}/api/health`, (res) => {
+                    console.log(`Keep-alive ping sent: ${res.statusCode}`);
+                }).on('error', () => { });
+            } catch (e) { }
+        }, PING_INTERVAL);
+        console.log('Keep-alive ping enabled');
+    }
 });
