@@ -30,7 +30,26 @@ const allowedOrigins = process.env.CLIENT_URL
     ? process.env.CLIENT_URL.split(',').map(o => o.trim())
     : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+console.log('CORS allowed origins:', allowedOrigins);
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Allow requests with no origin (mobile apps, curl, health checks)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.warn(`CORS blocked origin: ${origin}`);
+            callback(new Error(`CORS policy: origin ${origin} not allowed`));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
