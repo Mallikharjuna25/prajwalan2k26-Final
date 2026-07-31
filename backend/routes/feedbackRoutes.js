@@ -1,7 +1,8 @@
 import express from 'express';
 import { submitFeedback, checkFeedback } from '../controllers/feedbackController.js';
-import { protect, studentOnly } from '../middleware/authMiddleware.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
 
+const studentOnly = authorize('student');
 const router = express.Router();
 
 router.post('/submit', protect, studentOnly, submitFeedback);

@@ -66,13 +66,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/organizer', organizerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/events/cancellation', cancelRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/pass', passRoutes);
 app.use('/api/verify', verificationRoutes);
-app.use('/api/events/cancellation', cancelRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
